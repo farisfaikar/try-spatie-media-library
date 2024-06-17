@@ -20,6 +20,7 @@ class NewsController extends Controller
     public function index()
     {
         $news = $this->news::with(['media'])->get();
+
         return view("news.index", compact('news'));
     }
 
@@ -37,8 +38,11 @@ class NewsController extends Controller
     public function store(StoreNewsRequest $request)
     {
         $news = new News;
+
         $news->addMedia($request->image)->toMediaCollection('news');
+
         $news->save();
+        
         return redirect()->route('news.index');
     }
 
