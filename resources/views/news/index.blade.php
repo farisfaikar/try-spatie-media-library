@@ -3,9 +3,7 @@
 @section('content')
   {{-- @dd($images) --}}
   @foreach ($news as $n)
-    @foreach ($n->media as $image)
-      <img src="{{ $image->getUrl() }}" alt="what">
-    @endforeach
+    <img src="{{ $n->getFirstMediaUrl('news') }}" alt="what">
   @endforeach
 
   <div class="grid grid-cols-3 w-screen">
