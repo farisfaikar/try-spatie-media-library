@@ -20,4 +20,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/news', NewsController::class);
+// Route::resource('/news', NewsController::class);
+
+Route::get('/news', NewsList::class)->name('news.list');
+Route::get('/news/create', NewsCreate::class)->name('news.create');
+Route::post('/news/store', NewsCreate::class)->name('news.store');
