@@ -7,8 +7,14 @@
   @vite('resources/css/app.css')
 
   <title>Try Spatie Media Library</title>
+
+  @livewireStyles
 </head>
 <body>
-  @yield('content')
+  <h1>This is Try Spatie Media Library app.blade.php</h1>
+  
+  {{ $slot }}
+  
+  @livewireScripts
 </body>
 </html>
