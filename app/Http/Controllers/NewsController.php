@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\News;
 use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
@@ -10,6 +11,12 @@ class NewsController extends Controller
 {
     protected $news;
 
+    public $itemImage;
+
+    protected $rules = [
+        'itemImage' => 'nullable'
+    ];
+    
     public function __construct(News $news)
     {
         $this->news = $news;
@@ -29,7 +36,11 @@ class NewsController extends Controller
      */
     public function create()
     {
-        return view('news.create');
+        $news = $this->news::with(['media', 'items'])->find(1);
+
+        $items = $this->news->items;
+
+        return view("news.create", compact('news', 'items'));
     }
 
     /**
@@ -37,44 +48,32 @@ class NewsController extends Controller
      */
     public function store(StoreNewsRequest $request)
     {
+        dd('what');
         $news = new News;
 
-        $news->addMedia($request->image)->toMediaCollection('news');
+        $item = new Item;
+        
+        $news->addMedia($request->newsImage)->toMediaCollection('news');
+
+        $item->addMedia($request->itemImage)->toMediaCollection('images');
 
         $news->save();
-        
+
         return redirect()->route('news.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(News $news)
+    public function uploadImage()
     {
-        //
+        dd('test');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(News $news)
+    public function updatedItemImage()
     {
-        //
+        dd('test');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateNewsRequest $request, News $news)
+    public function render()
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(News $news)
-    {
-        //
+        return view('news.create');
     }
 }
