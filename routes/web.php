@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\NewsController;
+use App\Http\Livewire\News\NewsCreate;
+use App\Http\Livewire\News\NewsList;
 use Illuminate\Support\Facades\Route;
 
 /*
