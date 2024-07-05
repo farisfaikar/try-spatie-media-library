@@ -7,10 +7,10 @@
     
     @foreach ($this->news as $n)
         <p>News Images</p>
-        <img src="{{ $n->getFirstMediaUrl('news') }}" alt="{{ $n->title }}" width="100px" height="100px">
+        <img src="{{ $n->getFirstMediaUrl('image') }}" alt="{{ $n->title }}" width="100px" height="100px">
         @foreach ($n->items as $item)
             <p>Item Images</p>
-            <img src="{{ $item->getFirstMediaUrl('images') }}" alt="{{ $item->title }}" width="100px" height="100px">
+            <img src="{{ $item->getFirstMediaUrl('image') }}" alt="{{ $item->title }}" width="100px" height="100px">
         @endforeach
     @endforeach
 
