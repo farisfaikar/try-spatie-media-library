@@ -33,7 +33,7 @@ class NewsCreate extends Component
     public function updatedItemImage()
     {
         $this->validate([
-            'itemImage' => 'image|max:5120', // 5MB Max
+            'itemImage' => 'image',
         ]);
 
         // Add a new item connected to news and set the news_id in item as the news.id
@@ -48,29 +48,37 @@ class NewsCreate extends Component
                 ->toMediaCollection('image');
         }
 
-        $this->newItem->save();
+        dd($this->news->items);
+        // $this->newItem->save();
     }
 
     public function updatedNewsImage()
     {
-        $this->validate([
-            'news.image' => 'image|max:5120', // 5MB Max
-        ]);
+        // $this->validate([
+        //     'newsImage' => 'image',
+        // ]);
 
-        if ($this->news->image) {
-            $this->news->clearMediaCollection('image');
-        }
+        // if ($this->news->image) {
+        //     $this->news->clearMediaCollection('image');
+        // }
 
-        $this->news->addMediaFromRequest('news.image')
-            ->usingFileName($this->news->image->getClientOriginalName())
-            ->toMediaCollection('image');
-        
-
+        // $this->news->addMediaFromRequest('news.image')
+        //     ->usingFileName($this->news->image->getClientOriginalName())
+        //     ->toMediaCollection('image');
     }
 
     public function save()
     {
-        dd('what');
+        $this->news->save();
+
+        if ($this->newsImage) {
+            $this->news
+                ->addMedia($this->newsImage->getRealPath())
+                ->usingFileName($this->newsImage->getClientOriginalName())
+                ->toMediaCollection('image');
+        }
+
+        $this->redirect(route('news.list'));
     }
     
     public function render()
