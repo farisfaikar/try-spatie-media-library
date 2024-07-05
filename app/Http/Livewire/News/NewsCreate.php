@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\News;
 
 use App\Models\News;
+use App\Models\Item;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -14,71 +15,57 @@ class NewsCreate extends Component
 
     public $newsImage;
 
-    public $itemImage;
-    
+    public $items;
+
+    protected $rules = [
+        'news.title' => 'required',
+    ];
+
     public function mount()
     {
+        $this->items = [
+            [ 'title' => null, 'itemImage' => null ],
+        ];
+
         $this->news = new News();
-
-        $this->news->title = 'New News';
-        
-        $this->news->save();
-    }
-
-    public function getItemsProperty()
-    {
-        return $this->news->items;
-    }
-
-    public function updatedItemImage()
-    {
-        $this->validate([
-            'itemImage' => 'image',
-        ]);
-
-        // Add a new item connected to news and set the news_id in item as the news.id
-        $this->newItem = $this->news->items()->make();
-
-        $this->newItem->title = $this->news->title;
-        
-        if ($this->itemImage) {
-            $this->newItem
-                ->addMedia($this->itemImage->getRealPath())
-                ->usingFileName($this->itemImage->getClientOriginalName())
-                ->toMediaCollection('image');
-        }
-
-        dd($this->news->items);
-        // $this->newItem->save();
-    }
-
-    public function updatedNewsImage()
-    {
-        // $this->validate([
-        //     'newsImage' => 'image',
-        // ]);
-
-        // if ($this->news->image) {
-        //     $this->news->clearMediaCollection('image');
-        // }
-
-        // $this->news->addMediaFromRequest('news.image')
-        //     ->usingFileName($this->news->image->getClientOriginalName())
-        //     ->toMediaCollection('image');
     }
 
     public function save()
     {
         $this->news->save();
 
-        if ($this->newsImage) {
-            $this->news
-                ->addMedia($this->newsImage->getRealPath())
-                ->usingFileName($this->newsImage->getClientOriginalName())
-                ->toMediaCollection('image');
+        $this->news
+            ->addMedia($this->newsImage->getRealPath())
+            ->usingFileName($this->newsImage->getClientOriginalName())
+            ->toMediaCollection('image');
+
+        foreach ($this->items as $item) {
+            if ($item['itemImage']) {
+                $newItem = new Item();
+                
+                $newItem->title = $item['title'];
+                
+                $this->news->items()->save($newItem);
+
+                $newItem
+                    ->addMedia($item['itemImage']->getRealPath())
+                    ->usingFileName($item['itemImage']->getClientOriginalName())
+                    ->toMediaCollection('image');
+            }
         }
 
         $this->redirect(route('news.list'));
+    }
+
+    public function addItem()
+    {
+        $this->items[] = [ 'title' => null, 'itemImage' => null ];
+    }
+
+    public function deleteItem($index)
+    {
+        unset($this->items[$index]);
+        $this->items = array_values($this->items);
     }
     
     public function render()

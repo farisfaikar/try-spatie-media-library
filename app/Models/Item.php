@@ -11,6 +11,10 @@ class Item extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    protected $fillable = [
+        'title'
+    ];
+    
     public function news()
     {
         return $this->belongsTo(\App\Models\News::class);
